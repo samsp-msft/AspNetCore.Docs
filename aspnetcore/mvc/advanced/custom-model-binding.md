@@ -4,12 +4,11 @@ author: ardalis
 description: Learn how model binding allows controller actions to work directly with model types in ASP.NET Core.
 ms.author: riande
 ms.date: 01/06/2020
-no-loc: [Home, Privacy, Kestrel, appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: mvc/advanced/custom-model-binding
 ---
 # Custom Model Binding in ASP.NET Core
 
-::: moniker range=">= aspnetcore-3.0"
+:::moniker range=">= aspnetcore-3.0"
 
 By [Steve Smith](https://ardalis.com/) and [Kirk Larkin](https://twitter.com/serpent5)
 
@@ -23,7 +22,7 @@ The default model binders support most of the common .NET Core data types and sh
 
 ## Model binding review
 
-Model binding uses specific definitions for the types it operates on. A *simple type* is converted from a single string in the input. A *complex type* is converted from multiple input values. The framework determines the difference based on the existence of a `TypeConverter`. We recommended you create a type converter if you have a simple `string` -> `SomeType` mapping that doesn't require external resources.
+Model binding uses specific definitions for the types it operates on. A *simple type* is converted from a single string in the input. A *complex type* is converted from multiple input values. The framework determines the difference based on the existence of a `TypeConverter`. We recommend you create a type converter if you have a simple `string` -> `SomeType` mapping that doesn't require external resources.
 
 Before creating your own custom model binder, it's worth reviewing how existing model binders are implemented. Consider the <xref:Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinder> which can be used to convert base64-encoded strings into byte arrays. The byte arrays are often stored as files or database BLOB fields.
 
@@ -60,7 +59,7 @@ The following example shows how to use `ByteArrayModelBinder` to convert a base6
 
 You can POST a base64-encoded string to this api method using a tool like [Postman](https://www.getpostman.com/):
 
-![postman](custom-model-binding/images/postman.png "postman")
+![Postman tool](custom-model-binding/images/postman.png "postman")
 
 As long as the binder can bind request data to appropriately named properties or arguments, model binding will succeed. The following example shows how to use `ByteArrayModelBinder` with a view model:
 
@@ -133,8 +132,8 @@ Custom model binders:
 - Are most useful for eliminating repetitive code and cross-cutting concerns from action methods.
 - Typically shouldn't be used to convert a string into a custom type, a <xref:System.ComponentModel.TypeConverter> is usually a better option.
 
-::: moniker-end
-::: moniker range="< aspnetcore-3.0"
+:::moniker-end
+:::moniker range="< aspnetcore-3.0"
 
 By [Steve Smith](https://ardalis.com/)
 
@@ -148,7 +147,7 @@ The default model binders support most of the common .NET Core data types and sh
 
 ## Model binding review
 
-Model binding uses specific definitions for the types it operates on. A *simple type* is converted from a single string in the input. A *complex type* is converted from multiple input values. The framework determines the difference based on the existence of a `TypeConverter`. We recommended you create a type converter if you have a simple `string` -> `SomeType` mapping that doesn't require external resources.
+Model binding uses specific definitions for the types it operates on. A *simple type* is converted from a single string in the input. A *complex type* is converted from multiple input values. The framework determines the difference based on the existence of a `TypeConverter`. We recommend you create a type converter if you have a simple `string` -> `SomeType` mapping that doesn't require external resources.
 
 Before creating your own custom model binder, it's worth reviewing how existing model binders are implemented. Consider the <xref:Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinder> which can be used to convert base64-encoded strings into byte arrays. The byte arrays are often stored as files or database BLOB fields.
 
@@ -183,7 +182,7 @@ The following example shows how to use `ByteArrayModelBinder` to convert a base6
 
 You can POST a base64-encoded string to this api method using a tool like [Postman](https://www.getpostman.com/):
 
-![postman](custom-model-binding/images/postman.png "postman")
+![Postman tool output](custom-model-binding/images/postman.png "postman")
 
 As long as the binder can bind request data to appropriately named properties or arguments, model binding will succeed. The following example shows how to use `ByteArrayModelBinder` with a view model:
 
@@ -256,4 +255,4 @@ Custom model binders:
 - Are most useful for eliminating repetitive code and cross-cutting concerns from action methods.
 - Typically shouldn't be used to convert a string into a custom type, a <xref:System.ComponentModel.TypeConverter> is usually a better option.
 
-::: moniker-end
+:::moniker-end

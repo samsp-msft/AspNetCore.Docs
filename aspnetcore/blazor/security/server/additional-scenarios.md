@@ -5,13 +5,14 @@ description: Learn how to configure Blazor Server for additional security scenar
 monikerRange: '>= aspnetcore-3.1'
 ms.author: riande
 ms.custom: mvc
-ms.date: 10/06/2020
-no-loc: [Home, Privacy, Kestrel, appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
+ms.date: 11/09/2021
 uid: blazor/security/server/additional-scenarios
 ---
 # ASP.NET Core Blazor Server additional security scenarios
 
-::: moniker range=">= aspnetcore-6.0"
+This article explains how to configure Blazor Server for additional security scenarios, including how to pass tokens to a Blazor Server app.
+
+:::moniker range=">= aspnetcore-6.0"
 
 ## Pass tokens to a Blazor Server app
 
@@ -25,7 +26,8 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 ...
 
-services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+services.Configure<OpenIdConnectOptions>(
+    OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.SaveTokens = true;
@@ -41,19 +43,19 @@ Define a **scoped** token provider service that can be used within the Blazor ap
 ```csharp
 public class TokenProvider
 {
-    public string AccessToken { get; set; }
-    public string RefreshToken { get; set; }
+    public string? AccessToken { get; set; }
+    public string? RefreshToken { get; set; }
 }
 ```
 
-In `Startup.ConfigureServices`, add services for:
+In `Program.cs`, add services for:
 
 * `IHttpClientFactory`
 * `TokenProvider`
 
 ```csharp
-services.AddHttpClient();
-services.AddScoped<TokenProvider>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<TokenProvider>();
 ```
 
 Define a class to pass in the initial app state with the access and refresh tokens:
@@ -61,8 +63,8 @@ Define a class to pass in the initial app state with the access and refresh toke
 ```csharp
 public class InitialApplicationState
 {
-    public string AccessToken { get; set; }
-    public string RefreshToken { get; set; }
+    public string? AccessToken { get; set; }
+    public string? RefreshToken { get; set; }
 }
 ```
 
@@ -94,12 +96,12 @@ In the `App` component (`App.razor`), resolve the service and initialize it with
 
 @code {
     [Parameter]
-    public InitialApplicationState InitialState { get; set; }
+    public InitialApplicationState? InitialState { get; set; }
 
     protected override Task OnInitializedAsync()
     {
-        TokenProvider.AccessToken = InitialState.AccessToken;
-        TokenProvider.RefreshToken = InitialState.RefreshToken;
+        TokenProvider.AccessToken = InitialState?.AccessToken;
+        TokenProvider.RefreshToken = InitialState?.RefreshToken;
 
         return base.OnInitializedAsync();
     }
@@ -107,6 +109,8 @@ In the `App` component (`App.razor`), resolve the service and initialize it with
 ```
 
 Add a package reference to the app for the [`Microsoft.AspNet.WebApi.Client`](https://www.nuget.org/packages/Microsoft.AspNet.WebApi.Client) NuGet package.
+
+[!INCLUDE[](~/includes/package-reference.md)]
 
 In the service that makes a secure API request, inject the token provider and retrieve the token for the API request:
 
@@ -143,19 +147,23 @@ public class WeatherForecastService
 
 ## Set the authentication scheme
 
-For an app that uses more than one Authentication Middleware and thus has more than one authentication scheme, the scheme that Blazor uses can be explicitly set in the endpoint configuration of `Startup.Configure`. The following example sets the Azure Active Directory scheme:
+For an app that uses more than one Authentication Middleware and thus has more than one authentication scheme, the scheme that Blazor uses can be explicitly set in the endpoint configuration of `Program.cs`. The following example sets the OpenID Connect (OIDC) scheme:
 
 ```csharp
-endpoints.MapBlazorHub().RequireAuthorization(
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+
+...
+
+app.MapBlazorHub().RequireAuthorization(
     new AuthorizeAttribute 
     {
-        AuthenticationSchemes = AzureADDefaults.AuthenticationScheme
+        AuthenticationSchemes = OpenIdConnectDefaults.AuthenticationScheme
     });
 ```
 
-::: moniker-end
+:::moniker-end
 
-::: moniker range=">= aspnetcore-5.0 < aspnetcore-6.0"
+:::moniker range=">= aspnetcore-5.0 < aspnetcore-6.0"
 
 ## Pass tokens to a Blazor Server app
 
@@ -169,7 +177,8 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 ...
 
-services.Configure<OpenIdConnectOptions>(AzureADDefaults.OpenIdScheme, options =>
+services.Configure<OpenIdConnectOptions>(
+    OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.SaveTokens = true;
@@ -252,6 +261,8 @@ In the `App` component (`App.razor`), resolve the service and initialize it with
 
 Add a package reference to the app for the [`Microsoft.AspNet.WebApi.Client`](https://www.nuget.org/packages/Microsoft.AspNet.WebApi.Client) NuGet package.
 
+[!INCLUDE[](~/includes/package-reference.md)]
+
 In the service that makes a secure API request, inject the token provider and retrieve the token for the API request:
 
 ```csharp
@@ -287,19 +298,23 @@ public class WeatherForecastService
 
 ## Set the authentication scheme
 
-For an app that uses more than one Authentication Middleware and thus has more than one authentication scheme, the scheme that Blazor uses can be explicitly set in the endpoint configuration of `Startup.Configure`. The following example sets the Azure Active Directory scheme:
+For an app that uses more than one Authentication Middleware and thus has more than one authentication scheme, the scheme that Blazor uses can be explicitly set in the endpoint configuration of `Startup.Configure`. The following example sets the OpenID Connect (OIDC) scheme:
 
 ```csharp
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+
+...
+
 endpoints.MapBlazorHub().RequireAuthorization(
     new AuthorizeAttribute 
     {
-        AuthenticationSchemes = AzureADDefaults.AuthenticationScheme
+        AuthenticationSchemes = OpenIdConnectDefaults.AuthenticationScheme
     });
 ```
 
-::: moniker-end
+:::moniker-end
 
-::: moniker range="< aspnetcore-5.0"
+:::moniker range="< aspnetcore-5.0"
 
 ## Pass tokens to a Blazor Server app
 
@@ -403,6 +418,8 @@ In the `App` component (`App.razor`), resolve the service and initialize it with
 ```
 
 Add a package reference to the app for the [`Microsoft.AspNet.WebApi.Client`](https://www.nuget.org/packages/Microsoft.AspNet.WebApi.Client) NuGet package.
+
+[!INCLUDE[](~/includes/package-reference.md)]
 
 In the service that makes a secure API request, inject the token provider and retrieve the token for the API request:
 
@@ -510,4 +527,4 @@ If tacking on a segment to the authority isn't appropriate for the app's OIDC pr
 
 You can find the App ID URI to use in the OIDC provider app registration description.
 
-::: moniker-end
+:::moniker-end

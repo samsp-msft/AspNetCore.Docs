@@ -5,15 +5,16 @@ description: Learn about configuration of Blazor apps, including app settings, a
 monikerRange: '>= aspnetcore-3.1'
 ms.author: riande
 ms.custom: mvc
-ms.date: 12/10/2020
-no-loc: [Home, Privacy, Kestrel, appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
+ms.date: 11/09/2021
 uid: blazor/fundamentals/configuration
 ---
 # ASP.NET Core Blazor configuration
 
-::: moniker range=">= aspnetcore-6.0"
+This article explains configuration of Blazor apps, including app settings, authentication, and logging configuration.
 
-> [!NOTE]
+:::moniker range=">= aspnetcore-6.0"
+
+> [!IMPORTANT]
 > This topic applies to Blazor WebAssembly. For general guidance on ASP.NET Core app configuration, see <xref:fundamentals/configuration/index>.
 
 Blazor WebAssembly loads configuration from the following app settings files by default:
@@ -78,7 +79,7 @@ Add the namespace for <xref:Microsoft.Extensions.Configuration?displayProperty=f
 using Microsoft.Extensions.Configuration;
 ```
 
-In `Program.Main` of `Program.cs`, modify the existing <xref:System.Net.Http.HttpClient> service registration to use the client to read the file:
+In `Program.cs`, modify the existing <xref:System.Net.Http.HttpClient> service registration to use the client to read the file:
 
 ```csharp
 var http = new HttpClient()
@@ -96,7 +97,7 @@ builder.Configuration.AddJsonStream(stream);
 
 ## Memory Configuration Source
 
-The following example uses a <xref:Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource> in `Program.Main` to supply additional configuration.
+The following example uses a <xref:Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource> in `Program.cs` to supply additional configuration.
 
 Add the namespace for <xref:Microsoft.Extensions.Configuration.Memory?displayProperty=fullName> to `Program.cs`:
 
@@ -104,7 +105,7 @@ Add the namespace for <xref:Microsoft.Extensions.Configuration.Memory?displayPro
 using Microsoft.Extensions.Configuration.Memory;
 ```
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 var vehicleData = new Dictionary<string, string>()
@@ -178,7 +179,7 @@ Provide authentication configuration in an app settings file.
 }
 ```
 
-Load the configuration for an Identity provider with <xref:Microsoft.Extensions.Configuration.ConfigurationBinder.Bind%2A?displayProperty=nameWithType> in `Program.Main`. The following example loads configuration for an [OIDC provider](xref:blazor/security/webassembly/standalone-with-authentication-library).
+Load the configuration for an Identity provider with <xref:Microsoft.Extensions.Configuration.ConfigurationBinder.Bind%2A?displayProperty=nameWithType> in `Program.cs`. The following example loads configuration for an [OIDC provider](xref:blazor/security/webassembly/standalone-with-authentication-library).
 
 `Program.cs`:
 
@@ -189,15 +190,11 @@ builder.Services.AddOidcAuthentication(options =>
 
 ## Logging configuration
 
-Add a package reference for [`Microsoft.Extensions.Logging.Configuration`](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration) to the app's project file:
+Add the [`Microsoft.Extensions.Logging.Configuration`](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration) package to the app.
 
-```xml
-<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="{VERSION}" />
-```
+[!INCLUDE[](~/includes/package-reference.md)]
 
-In the preceding example, the `{VERSION}` placeholder is the package's version. Package versions are found at [NuGet.org](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration).
-
-In the app settings file, provide logging configuration. The logging configuration is loaded in `Program.Main`.
+In the app settings file, provide logging configuration. The logging configuration is loaded in `Program.cs`.
 
 `wwwroot/appsettings.json`:
 
@@ -206,20 +203,13 @@ In the app settings file, provide logging configuration. The logging configurati
   "Logging": {
     "LogLevel": {
       "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
+      "Microsoft.AspNetCore": "Warning"
     }
   }
 }
 ```
 
-Add the namespace for <xref:Microsoft.Extensions.Logging?displayProperty=fullName> to `Program.cs`:
-
-```csharp
-using Microsoft.Extensions.Logging;
-```
-
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 builder.Logging.AddConfiguration(
@@ -228,9 +218,9 @@ builder.Logging.AddConfiguration(
 
 ## Host builder configuration
 
-Read host builder configuration from <xref:Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder.Configuration?displayProperty=nameWithType> in `Program.Main`.
+Read host builder configuration from <xref:Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder.Configuration?displayProperty=nameWithType> in `Program.cs`.
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 var hostname = builder.Configuration["HostName"];
@@ -245,9 +235,24 @@ Configuration files are cached for offline use. With [Progressive Web Applicatio
 
 For more information on how background updates are handled by PWAs, see <xref:blazor/progressive-web-app#background-updates>.
 
-::: moniker-end
+## Options configuration
 
-::: moniker range=">= aspnetcore-5.0 < aspnetcore-6.0"
+[Options configuration](xref:fundamentals/configuration/options) for Blazor WebAssembly apps requires adding a package reference for the [`Microsoft.Extensions.Options.ConfigurationExtensions`](https://www.nuget.org/packages/Microsoft.Extensions.Options.ConfigurationExtensions) NuGet package.
+
+[!INCLUDE[](~/includes/package-reference.md)]
+
+Example:
+
+```csharp
+builder.Services.Configure<MyOptions>(
+    builder.Configuration.GetSection("MyOptions"));
+```
+
+Not all of the ASP.NET Core Options features are supported in Razor components. For example, <xref:Microsoft.Extensions.Options.IOptionsSnapshot%601> and <xref:Microsoft.Extensions.Options.IOptionsMonitor%601> configuration is supported, but recomputing option values for these interfaces isn't supported outside of reloading the app by either requesting the app in a new browser tab or selecting the browser's reload button. Merely calling [`StateHasChanged`](xref:blazor/components/lifecycle#state-changes-statehaschanged) doesn't update snapshot or monitored option values when the underlying configuration changes.
+
+:::moniker-end
+
+:::moniker range=">= aspnetcore-5.0 < aspnetcore-6.0"
 
 > [!NOTE]
 > This topic applies to Blazor WebAssembly. For general guidance on ASP.NET Core app configuration, see <xref:fundamentals/configuration/index>.
@@ -314,7 +319,7 @@ Add the namespace for <xref:Microsoft.Extensions.Configuration?displayProperty=f
 using Microsoft.Extensions.Configuration;
 ```
 
-In `Program.Main` of `Program.cs`, modify the existing <xref:System.Net.Http.HttpClient> service registration to use the client to read the file:
+In `Program.cs`, modify the existing <xref:System.Net.Http.HttpClient> service registration to use the client to read the file:
 
 ```csharp
 var http = new HttpClient()
@@ -332,7 +337,7 @@ builder.Configuration.AddJsonStream(stream);
 
 ## Memory Configuration Source
 
-The following example uses a <xref:Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource> in `Program.Main` to supply additional configuration.
+The following example uses a <xref:Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource> in `Program.cs` to supply additional configuration.
 
 Add the namespace for <xref:Microsoft.Extensions.Configuration.Memory?displayProperty=fullName> to `Program.cs`:
 
@@ -340,7 +345,7 @@ Add the namespace for <xref:Microsoft.Extensions.Configuration.Memory?displayPro
 using Microsoft.Extensions.Configuration.Memory;
 ```
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 var vehicleData = new Dictionary<string, string>()
@@ -414,7 +419,7 @@ Provide authentication configuration in an app settings file.
 }
 ```
 
-Load the configuration for an Identity provider with <xref:Microsoft.Extensions.Configuration.ConfigurationBinder.Bind%2A?displayProperty=nameWithType> in `Program.Main`. The following example loads configuration for an [OIDC provider](xref:blazor/security/webassembly/standalone-with-authentication-library).
+Load the configuration for an Identity provider with <xref:Microsoft.Extensions.Configuration.ConfigurationBinder.Bind%2A?displayProperty=nameWithType> in `Program.cs`. The following example loads configuration for an [OIDC provider](xref:blazor/security/webassembly/standalone-with-authentication-library).
 
 `Program.cs`:
 
@@ -425,15 +430,11 @@ builder.Services.AddOidcAuthentication(options =>
 
 ## Logging configuration
 
-Add a package reference for [`Microsoft.Extensions.Logging.Configuration`](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration) to the app's project file:
+Add the [`Microsoft.Extensions.Logging.Configuration`](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration) package to the app.
 
-```xml
-<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="{VERSION}" />
-```
+[!INCLUDE[](~/includes/package-reference.md)]
 
-In the preceding example, the `{VERSION}` placeholder is the package's version. Package versions are found at [NuGet.org](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration).
-
-In the app settings file, provide logging configuration. The logging configuration is loaded in `Program.Main`.
+In the app settings file, provide logging configuration. The logging configuration is loaded in `Program.cs`.
 
 `wwwroot/appsettings.json`:
 
@@ -455,7 +456,7 @@ Add the namespace for <xref:Microsoft.Extensions.Logging?displayProperty=fullNam
 using Microsoft.Extensions.Logging;
 ```
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 builder.Logging.AddConfiguration(
@@ -464,9 +465,9 @@ builder.Logging.AddConfiguration(
 
 ## Host builder configuration
 
-Read host builder configuration from <xref:Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder.Configuration?displayProperty=nameWithType> in `Program.Main`.
+Read host builder configuration from <xref:Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder.Configuration?displayProperty=nameWithType> in `Program.cs`.
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 var hostname = builder.Configuration["HostName"];
@@ -481,9 +482,24 @@ Configuration files are cached for offline use. With [Progressive Web Applicatio
 
 For more information on how background updates are handled by PWAs, see <xref:blazor/progressive-web-app#background-updates>.
 
-::: moniker-end
+## Options configuration
 
-::: moniker range="< aspnetcore-5.0"
+[Options configuration](xref:fundamentals/configuration/options) for Blazor WebAssembly apps requires adding a package reference for the [`Microsoft.Extensions.Options.ConfigurationExtensions`](https://www.nuget.org/packages/Microsoft.Extensions.Options.ConfigurationExtensions) NuGet package.
+
+[!INCLUDE[](~/includes/package-reference.md)]
+
+Example:
+
+```csharp
+builder.Services.Configure<MyOptions>(
+    builder.Configuration.GetSection("MyOptions"));
+```
+
+Not all of the ASP.NET Core Options features are supported in Razor components. For example, <xref:Microsoft.Extensions.Options.IOptionsSnapshot%601> and <xref:Microsoft.Extensions.Options.IOptionsMonitor%601> configuration is supported, but recomputing option values for these interfaces isn't supported outside of reloading the app by either requesting the app in a new browser tab or selecting the browser's reload button. Merely calling [`StateHasChanged`](xref:blazor/components/lifecycle#state-changes-statehaschanged) doesn't update snapshot or monitored option values when the underlying configuration changes.
+
+:::moniker-end
+
+:::moniker range="< aspnetcore-5.0"
 
 > [!NOTE]
 > This topic applies to Blazor WebAssembly. For general guidance on ASP.NET Core app configuration, see <xref:fundamentals/configuration/index>.
@@ -550,7 +566,7 @@ Add the namespace for <xref:Microsoft.Extensions.Configuration?displayProperty=f
 using Microsoft.Extensions.Configuration;
 ```
 
-In `Program.Main` of `Program.cs`, modify the existing <xref:System.Net.Http.HttpClient> service registration to use the client to read the file:
+In `Program.cs`, modify the existing <xref:System.Net.Http.HttpClient> service registration to use the client to read the file:
 
 ```csharp
 var http = new HttpClient()
@@ -568,7 +584,7 @@ builder.Configuration.AddJsonStream(stream);
 
 ## Memory Configuration Source
 
-The following example uses a <xref:Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource> in `Program.Main` to supply additional configuration.
+The following example uses a <xref:Microsoft.Extensions.Configuration.Memory.MemoryConfigurationSource> in `Program.cs` to supply additional configuration.
 
 Add the namespace for <xref:Microsoft.Extensions.Configuration.Memory?displayProperty=fullName> to `Program.cs`:
 
@@ -576,7 +592,7 @@ Add the namespace for <xref:Microsoft.Extensions.Configuration.Memory?displayPro
 using Microsoft.Extensions.Configuration.Memory;
 ```
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 var vehicleData = new Dictionary<string, string>()
@@ -650,7 +666,7 @@ Provide authentication configuration in an app settings file.
 }
 ```
 
-Load the configuration for an Identity provider with <xref:Microsoft.Extensions.Configuration.ConfigurationBinder.Bind%2A?displayProperty=nameWithType> in `Program.Main`. The following example loads configuration for an [OIDC provider](xref:blazor/security/webassembly/standalone-with-authentication-library).
+Load the configuration for an Identity provider with <xref:Microsoft.Extensions.Configuration.ConfigurationBinder.Bind%2A?displayProperty=nameWithType> in `Program.cs`. The following example loads configuration for an [OIDC provider](xref:blazor/security/webassembly/standalone-with-authentication-library).
 
 `Program.cs`:
 
@@ -661,15 +677,11 @@ builder.Services.AddOidcAuthentication(options =>
 
 ## Logging configuration
 
-Add a package reference for [`Microsoft.Extensions.Logging.Configuration`](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration) to the app's project file:
+Add the [`Microsoft.Extensions.Logging.Configuration`](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration) package to the app.
 
-```xml
-<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="{VERSION}" />
-```
+[!INCLUDE[](~/includes/package-reference.md)]
 
-In the preceding example, the `{VERSION}` placeholder is the package's version. Package versions are found at [NuGet.org](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Configuration).
-
-In the app settings file, provide logging configuration. The logging configuration is loaded in `Program.Main`.
+In the app settings file, provide logging configuration. The logging configuration is loaded in `Program.cs`.
 
 `wwwroot/appsettings.json`:
 
@@ -691,7 +703,7 @@ Add the namespace for <xref:Microsoft.Extensions.Logging?displayProperty=fullNam
 using Microsoft.Extensions.Logging;
 ```
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 builder.Logging.AddConfiguration(
@@ -700,9 +712,9 @@ builder.Logging.AddConfiguration(
 
 ## Host builder configuration
 
-Read host builder configuration from <xref:Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder.Configuration?displayProperty=nameWithType> in `Program.Main`.
+Read host builder configuration from <xref:Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder.Configuration?displayProperty=nameWithType> in `Program.cs`.
 
-In `Program.Main` of `Program.cs`:
+In `Program.cs`:
 
 ```csharp
 var hostname = builder.Configuration["HostName"];
@@ -717,4 +729,19 @@ Configuration files are cached for offline use. With [Progressive Web Applicatio
 
 For more information on how background updates are handled by PWAs, see <xref:blazor/progressive-web-app#background-updates>.
 
-::: moniker-end
+## Options configuration
+
+[Options configuration](xref:fundamentals/configuration/options) for Blazor WebAssembly apps requires adding a package reference for the [`Microsoft.Extensions.Options.ConfigurationExtensions`](https://www.nuget.org/packages/Microsoft.Extensions.Options.ConfigurationExtensions) NuGet package.
+
+[!INCLUDE[](~/includes/package-reference.md)]
+
+Example:
+
+```csharp
+builder.Services.Configure<MyOptions>(
+    builder.Configuration.GetSection("MyOptions"));
+```
+
+Not all of the ASP.NET Core Options features are supported in Razor components. For example, <xref:Microsoft.Extensions.Options.IOptionsSnapshot%601> and <xref:Microsoft.Extensions.Options.IOptionsMonitor%601> configuration is supported, but recomputing option values for these interfaces isn't supported outside of reloading the app by either requesting the app in a new browser tab or selecting the browser's reload button. Merely calling [`StateHasChanged`](xref:blazor/components/lifecycle#state-changes-statehaschanged) doesn't update snapshot or monitored option values when the underlying configuration changes.
+
+:::moniker-end

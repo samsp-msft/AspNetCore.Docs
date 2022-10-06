@@ -1,4 +1,4 @@
-revision: 2
+revision: 3
 schema-version: 1
 owner-ms-alias: adegeo
 
@@ -31,6 +31,7 @@ issues:
             - labels-add: ["Blazor"]
             - projects-add: [35]
             - labels-remove: [":watch: Not Triaged"]
+            - assignee-add: ["guardrex"]
         - check:
             - type: metadata-comment
               name: technology
@@ -53,6 +54,16 @@ issues:
             - labels-add: ["Blazor"]
             - projects-add: [35]
             - labels-remove: [":watch: Not Triaged"]
+            - assignee-add: ["guardrex"]
+        - check:
+            - type: metadata-comment
+              name: content source
+              value: "(?i).*main\/aspnetcore\/mvc\/views\/tag-helpers\/built-in\/persist-component-state.md"
+          pass:
+            - labels-add: ["Blazor"]
+            - projects-add: [35]
+            - labels-remove: [":watch: Not Triaged"]
+            - assignee-add: ["guardrex"]
         
         # If the word appears anywhere in the file name path, add the label
         - check:
@@ -63,6 +74,7 @@ issues:
             - labels-add: ["Blazor"]
             - projects-add: [35]
             - labels-remove: [":watch: Not Triaged"]
+            - assignee-add: ["guardrex"]
         - check:
             - type: metadata-comment
               name: content source

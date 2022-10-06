@@ -4,14 +4,15 @@ author: rick-anderson
 description: Learn about Razor markup syntax for embedding server-based code into webpages.
 ms.author: riande
 ms.date: 02/12/2020
-no-loc: [Home, Privacy, Kestrel, appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: mvc/views/razor
 ---
 # Razor syntax reference for ASP.NET Core
 
 By [Rick Anderson](https://twitter.com/RickAndMSFT), [Taylor Mullen](https://twitter.com/ntaylormullen), and [Dan Vicarel](https://github.com/Rabadash8820)
 
-Razor is a markup syntax for embedding server-based code into webpages. The Razor syntax consists of Razor markup, C#, and HTML. Files containing Razor generally have a `.cshtml` file extension. Razor is also found in [Razor components](xref:blazor/components/index) files (`.razor`).
+Razor is a markup syntax for embedding .NET based code into webpages. The Razor syntax consists of Razor markup, C#, and HTML. Files containing Razor generally have a `.cshtml` file extension. Razor is also found in [Razor component](xref:blazor/components/index) files (`.razor`). Razor syntax is similar to the templating engines of various JavaScript single-page application (SPA) frameworks, such as Angular, React, VueJs, and Svelte. For more information see, <xref:client-side/spa-services>.
+
+[Introduction to ASP.NET Web Programming Using the Razor Syntax](/aspnet/web-pages/overview/getting-started/introducing-razor-syntax-c) provides many samples of programming with Razor syntax. Although the topic was written for ASP.NET rather than ASP.NET Core, most of the samples apply to ASP.NET Core.
 
 ## Rendering HTML
 
@@ -21,7 +22,7 @@ The default Razor language is HTML. Rendering HTML from Razor markup is no diffe
 
 Razor supports C# and uses the `@` symbol to transition from HTML to C#. Razor evaluates C# expressions and renders them in the HTML output.
 
-When an `@` symbol is followed by a [Razor reserved keyword](#razor-reserved-keywords), it transitions into Razor-specific markup. Otherwise, it transitions into plain C#.
+When an `@` symbol is followed by a [Razor reserved keyword](#razor-reserved-keywords), it transitions into Razor-specific markup. Otherwise, it transitions into plain HTML.
 
 To escape an `@` symbol in Razor markup, use a second `@` symbol:
 
@@ -42,7 +43,7 @@ HTML attributes and content containing email addresses don't treat the `@` symbo
 ```
 
 
-::: moniker range=">= aspnetcore-6.0"
+:::moniker range=">= aspnetcore-6.0"
 
 ### Scalable Vector Graphics (SVG)
 
@@ -62,7 +63,7 @@ HTML attributes and content containing email addresses don't treat the `@` symbo
 </svg>
 ```
 
-::: moniker-end
+:::moniker-end
 
 ## Implicit Razor expressions
 
@@ -617,7 +618,7 @@ In an ASP.NET Core MVC or Razor Pages app created with individual user accounts,
 @model LoginViewModel
 ```
 
-The class generated inherits from `RazorPage<dynamic>`:
+The class generated inherits from `RazorPage<LoginViewModel>`:
 
 ```csharp
 public class _Views_Account_Login_cshtml : RazorPage<LoginViewModel>
@@ -636,7 +637,7 @@ The `@model` directive specifies the type of the `Model` property. The directive
 The `@namespace` directive:
 
 * Sets the namespace of the class of the generated Razor page, MVC view, or Razor component.
-* Sets the root derived namespaces of a pages, views, or components classes from the closest imports file in the directory tree, `_ViewImports.cshtml` (views or pages) or *_Imports.razor* (Razor components).
+* Sets the root derived namespaces of a pages, views, or components classes from the closest imports file in the directory tree, `_ViewImports.cshtml` (views or pages) or `_Imports.razor` (Razor components).
 
 ```cshtml
 @namespace Your.Namespace.Here
@@ -673,7 +674,7 @@ The `@page` directive has different effects depending on the type of the file wh
 * In a `.cshtml` file indicates that the file is a Razor Page. For more information, see [Custom routes](xref:razor-pages/index#custom-routes) and <xref:razor-pages/index>.
 * Specifies that a Razor component should handle requests directly. For more information, see <xref:blazor/fundamentals/routing>.
 
-::: moniker range=">= aspnetcore-5.0"
+:::moniker range=">= aspnetcore-5.0"
 
 ### `@preservewhitespace`
 
@@ -685,7 +686,7 @@ When set to `false` (default), whitespace in the rendered markup from Razor comp
 * Leading or trailing within a `RenderFragment` parameter. For example, child content passed to another component.
 * It precedes or follows a C# code block, such as `@if` or `@foreach`.
 
-::: moniker-end
+:::moniker-end
 
 ### `@section`
 
@@ -753,7 +754,7 @@ The `@key` directive attribute causes the components diffing algorithm to guaran
 
 Component references (`@ref`) provide a way to reference a component instance so that you can issue commands to that instance. For more information, see <xref:blazor/components/index#capture-references-to-components>.
 
-::: moniker range=">= aspnetcore-6.0"
+:::moniker range=">= aspnetcore-6.0"
 
 ### `@typeparam`
 
@@ -776,9 +777,9 @@ For more information, see the following articles:
 * <xref:blazor/components/index#generic-type-parameter-support>
 * <xref:blazor/components/templated-components>
 
-::: moniker-end
+:::moniker-end
 
-::: moniker range="< aspnetcore-6.0"
+:::moniker range="< aspnetcore-6.0"
 
 ### `@typeparam`
 
@@ -795,7 +796,7 @@ For more information, see the following articles:
 * <xref:blazor/components/index#generic-type-parameter-support>
 * <xref:blazor/components/templated-components>
 
-::: moniker-end
+:::moniker-end
 
 ## Templated Razor delegates
 
@@ -912,7 +913,7 @@ There are three directives that pertain to [Tag Helpers](xref:mvc/views/tag-help
 
 ### Razor keywords
 
-* `page` (Requires ASP.NET Core 2.1 or later)
+* `page`
 * `namespace`
 * `functions`
 * `inherits`
@@ -947,9 +948,25 @@ C# Razor keywords must be double-escaped with `@(@C# Razor Keyword)` (for exampl
 
 ## Inspect the Razor C# class generated for a view
 
-The [Razor SDK](xref:razor-pages/sdk) handles compilation of Razor files. When building a project, the Razor SDK generates an `obj/<build_configuration>/<target_framework_moniker>/Razor` directory in the project root. The directory structure within the `Razor` directory mirrors the project's directory structure.
+::: moniker range=">= aspnetcore-5.0"
 
-Consider the following directory structure in an ASP.NET Core Razor Pages project:
+The [Razor SDK](xref:razor-pages/sdk) handles compilation of Razor files. By default, the generated code files aren't emitted. To enable emitting the code files, set the `EmitCompilerGeneratedFiles` directive in the project file (`.csproj`) to `true`:
+
+```xml
+<PropertyGroup>
+  <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+</PropertyGroup>
+```
+
+When building a 6.0 project (`net6.0`) in the `Debug` build configuration, the Razor SDK generates an `obj/Debug/net6.0/generated/` directory in the project root. Its subdirectory contains the emitted Razor page code files.
+
+::: moniker-end
+
+::: moniker range="< aspnetcore-5.0"
+
+The [Razor SDK](xref:razor-pages/sdk) handles compilation of Razor files. When building a project, the Razor SDK generates an `obj/{BUILD CONFIGURATION}/{TARGET FRAMEWORK MONIKER}/Razor` directory in the project root. The directory structure within the `Razor` directory mirrors the project's directory structure.
+
+Consider the following directory structure in an ASP.NET Core Razor Pages 2.1 project:
 
 ```
  Areas/
@@ -964,9 +981,9 @@ Consider the following directory structure in an ASP.NET Core Razor Pages projec
    _ViewStart.cshtml
    Index.cshtml
    Index.cshtml.cs
-  ```
+```
 
-Building the project in *Debug* configuration yields the following `obj` directory:
+Building the project in `Debug` configuration yields the following `obj` directory:
 
 ```
  obj/
@@ -986,6 +1003,8 @@ Building the project in *Debug* configuration yields the following `obj` directo
 ```
 
 To view the generated class for `Pages/Index.cshtml`, open `obj/Debug/netcoreapp2.1/Razor/Pages/Index.g.cshtml.cs`.
+
+::: moniker-end
 
 ## View lookups and case sensitivity
 

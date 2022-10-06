@@ -5,7 +5,6 @@ description: Useful tools for diagnosing performance issues in ASP.NET Core apps
 monikerRange: '>= aspnetcore-1.1'
 ms.author: riande
 ms.date: 04/11/2019
-no-loc: [Home, Privacy, Kestrel, appsettings.json, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR]
 uid: performance/diagnostic-tools
 ---
 # Performance Diagnostic Tools
@@ -48,7 +47,7 @@ For more information on code-based monitoring, see [Application Insights for ASP
 
 [PerfView](https://github.com/Microsoft/perfview) is a performance analysis tool created by the .NET team specifically for diagnosing .NET performance issues. PerfView allows analysis of CPU usage, memory and GC behavior, performance events, and wall clock time.
 
-You can learn more about PerfView and how to get started with [PerfView video tutorials](https://channel9.msdn.com/Series/PerfView-Tutorial) or by reading the user's guide available in the tool or [on GitHub](https://github.com/Microsoft/perfview).
+For more about PerfView, see the user's guide available in the tool or [on GitHub](https://github.com/Microsoft/perfview).
 
 ## Windows Performance Toolkit
 
@@ -56,7 +55,7 @@ You can learn more about PerfView and how to get started with [PerfView video tu
 
 ## PerfCollect
 
-While PerfView is a useful performance analysis tool for .NET scenarios, it only runs on Windows so you can't use it to collect traces from ASP.NET Core apps running in Linux environments.
+While PerfView is a useful performance analysis tool for .NET scenarios, it only runs on Linux so you can't use it to collect traces from ASP.NET Core apps running in Windows environments.
 
 [PerfCollect](https://github.com/dotnet/coreclr/blob/master/Documentation/project-docs/linux-performance-tracing.md) is a bash script that uses native Linux profiling tools ([Perf](https://perf.wiki.kernel.org/index.php/Main_Page) and [LTTng](https://lttng.org/)) to collect traces on Linux that can be analyzed by PerfView. PerfCollect is useful when performance problems show up in Linux environments where PerfView can't be used directly. Instead, PerfCollect can collect traces from .NET Core apps that are then analyzed on a Windows computer using PerfView.
 

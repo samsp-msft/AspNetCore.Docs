@@ -5,7 +5,6 @@ description: Learn about the new features in ASP.NET Core 5.0.
 ms.author: riande
 ms.custom: mvc
 ms.date: 10/29/2020
-no-loc: [Home, Privacy, "ASP.NET Core Identity", cookie, Cookie, Blazor, "Blazor Server", "Blazor WebAssembly", "Identity", "Let's Encrypt", Razor, SignalR, Kestrel]
 uid: aspnetcore-5.0
 ---
 # What's new in ASP.NET Core 5.0
@@ -60,7 +59,7 @@ ASP.NET Core 3.1 introduced <xref:Microsoft.AspNetCore.Mvc.Routing.DynamicRouteV
 * The [[Compare]](xref:System.ComponentModel.DataAnnotations.CompareAttribute) attribute can be applied to properties on a Razor Page model.
 * Parameters and properties bound from the body are considered required by default. <!-- Review: How is this different from 3.1
 The validation system in .NET Core 3.0 and later treats non-nullable parameters or bound properties as if they had a [Required] attribute.
-see https://docs.microsoft.com/aspnet/core/mvc/models/validation?view=aspnetcore-3.1   
+see https://learn.microsoft.com/aspnet/core/mvc/models/validation?view=aspnetcore-3.1   
 -->
 
 ## Web API
@@ -78,7 +77,7 @@ In ASP.NET Core 5.0, the web API templates enable the OpenAPI support by default
 	```
 * From Visual Studio: Uncheck **Enable OpenAPI support**.
 
-All *.csproj* files created for web API projects contain the [Swashbuckle.AspNetCore](https://www.nuget.org/packages/Swashbuckle.AspNetCore/) NuGet package reference.
+All `.csproj` files created for web API projects contain the [Swashbuckle.AspNetCore](https://www.nuget.org/packages/Swashbuckle.AspNetCore/) NuGet package reference.
 
 ```xml
 <ItemGroup>
@@ -127,7 +126,7 @@ The `InputFile` component allows reading one or more files selected by a user fo
 
 ### New `InputRadio` and `InputRadioGroup` components
 
-Blazor has built-in `InputRadio` and `InputRadioGroup` components that simplify data binding to radio button groups with integrated validation. For more information, see <xref:blazor/forms-validation>.
+Blazor has built-in `InputRadio` and `InputRadioGroup` components that simplify data binding to radio button groups with integrated validation. For more information, see <xref:blazor/forms-and-input-components>.
 
 ### Component virtualization
 
@@ -143,11 +142,11 @@ Use the `FocusAsync` convenience method on element references to set the UI focu
 
 ### Custom validation CSS class attributes
 
-Custom validation CSS class attributes are useful when integrating with CSS frameworks, such as Bootstrap. For more information, see <xref:blazor/forms-validation#custom-validation-css-class-attributes>.
+Custom validation CSS class attributes are useful when integrating with CSS frameworks, such as Bootstrap. For more information, see <xref:blazor/forms-and-input-components#custom-validation-css-class-attributes>.
 
 ### IAsyncDisposable support
 
-Blazor components now support the <xref:System.IAsyncDisposable> interface for the asynchronous release of allocated resources.
+Razor components now support the <xref:System.IAsyncDisposable> interface for the asynchronous release of allocated resources.
 
 ### JavaScript isolation and object references
 
@@ -161,7 +160,7 @@ The following built-in components support display names with the `DisplayName` p
 * `InputNumber`
 * `InputSelect`
 
-For more information, see <xref:blazor/forms-validation#display-name-support>.
+For more information, see <xref:blazor/forms-and-input-components#display-name-support>.
 
 ### Catch-all route parameters
 
@@ -385,8 +384,6 @@ endpoints.MapGet("/weather/{city:alpha}", async context =>
     await context.Response.WriteAsJsonAsync(weather);
 });
 ```
-
-For more information on the new JSON extension methods and route to code, see [this .NET show](https://channel9.msdn.com/Shows/On-NET/ASPNET-Core-Series-Route-to-Code).
 
 ### System.Diagnostics.Activity
 
