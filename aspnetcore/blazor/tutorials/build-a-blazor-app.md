@@ -155,7 +155,7 @@ Open the `Todo` component in any file editor and add an `@page` Razor directive 
 
 Save the `Pages/Todo.razor` file.
 
-Add the `Todo` component to the navigation bar.
+## Add the `Todo` component to the navigation bar.
 
 The `NavMenu` component is used in the app's layout. Layouts are components that allow you to avoid duplication of content in an app. The `NavLink` component provides a cue in the app's UI when the component URL is loaded by the app.
 
